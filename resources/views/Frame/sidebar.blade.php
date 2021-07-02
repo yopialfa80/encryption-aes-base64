@@ -58,11 +58,29 @@
             </li>
             <li class="nav-item nav-category">KEAMANAN</li>
             <li class="nav-item">
+                <a href="{{ url('keamanan/panjang-chipperteks') }}" class="nav-link">
+                    <i class="link-icon" data-feather="command"></i>
+                    <span class="link-title">Panjang Chipperteks</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url('keamanan/panjang-kunci') }}" class="nav-link">
+                    <i class="link-icon" data-feather="cpu"></i>
+                    <span class="link-title">Panjang Kunci</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url('keamanan/infinity-loop') }}" class="nav-link">
+                    <i class="link-icon" data-feather="link"></i>
+                    <span class="link-title">Infinity Loop</span>
+                </a>
+            </li>
+            {{-- <li class="nav-item">
                 <a href="{{ url('keamanan/web-generator') }}" class="nav-link">
                     <i class="link-icon" data-feather="lock"></i>
                     <span class="link-title">Website Generator Online</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a href="{{ url('keamanan/brute-force') }}" class="nav-link">
                     <i class="link-icon" data-feather="codesandbox"></i>

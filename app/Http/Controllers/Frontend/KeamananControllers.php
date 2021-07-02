@@ -14,4 +14,18 @@ class KeamananControllers extends Controller
     {
         return view('Pages.Keamanan.brute_force');
     }
+
+    public function panjang_chipperteks()
+    {
+        return view('Pages.Keamanan.panjang_chipperteks');
+    }
+    public function panjang_kunci()
+    {
+        return view('Pages.Keamanan.panjang_kunci');
+    }
+
+    public function infinity_loop()
+    {
+        return view('Pages.Keamanan.infinity_loop');
+    }
 }

@@ -32,16 +32,6 @@ function decryptOnlyBase64(value, kunci) {
     return Base64.decode(value);
 }
 
-function makeRandomText(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
- }
-
 function startLoading() {
     $.LoadingOverlay("show", {
         image : BaseUrl + '/assets/images/loading/main-loading.gif',
@@ -60,7 +50,7 @@ function stopLoading() {
 
 function makeRandomText(length) {
     var result           = '';
-    var characters       = 'abcdefghijklmnopqrstuvwxyz';
+    var characters       = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*()_+';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
        result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -68,4 +58,30 @@ function makeRandomText(length) {
     return result;
 }
 
-// console.log(`teks`, makeRandomText(16))
+// console.log(`teks`, makeRandomText(1000))
+
+var key = CryptoJS.enc.Hex.parse('36ebe205bcdfc499a25e6923f4450fa8');
+var iv  = CryptoJS.enc.Hex.parse('be410fea41df7162a679875ec131cf2c');
+
+function enkripsiAdvancedEncryptionStandard(plaintext, kunci){
+    var encrypted = CryptoJS.AES.encrypt( plaintext, kunci, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 } );
+    return encrypted.toString();
+};
+
+function dekripsiAdvancedEncryptionStandard(chipperteks, kunci){
+    var decrypted = CryptoJS.AES.decrypt(chipperteks, kunci, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 } );
+    return decrypted.toString(CryptoJS.enc.Utf8);
+};
+
+function enkripsiRivestCode4(plaintext, kunci){
+    var resultEnkripsi = CryptoJS.RC4.encrypt(plaintext, kunci);
+    return resultEnkripsi;
+};
+
+function dekripsiRivestCode4(chipperteks, kunci){
+    var resultDekripsi = CryptoJS.RC4.decrypt(chipperteks, kunci);
+    return resultDekripsi.toString(CryptoJS.enc.Utf8);
+};
+
+console.log(`AES`, CryptoJS.AES.encrypt( 'Hai', '123'))
+// console.log(`RC4`, CryptoJS.RC4.encrypt( 'Hai', '123'))

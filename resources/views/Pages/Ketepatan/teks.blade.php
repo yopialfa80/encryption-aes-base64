@@ -10,78 +10,125 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title" style="text-transform:none">Advanced Encryption Standard (AES) dan Base64</h6>
-                <p class="card-description border-bottom mb-5 pb-2">Enkripsi dan Dekripsi dengan menggabungkan 2 metode yaitu Advanced Encryption Standard (AES)
-                     dan Base64. Teks yang di inputkan akan di enkripsi kedalam Advanced Encryption Standard (AES) lalu hasil dari enkripsi tersebut akan di 
-                     enkripsi kembali kedalam Base64 sehingga data tersebut dapat dengan mudah di kelola.</p>
-                <div class="row">
+                <h6 class="card-title" style="text-transform:none">Advanced Encryption Standard (AES) dan Rivest Code 4 (RC4)</h6>
+                <p class="card-description border-bottom mb-5 pb-2">Pengujian pada algoritma Advanced Encryption Standard (AES) dan Rivest Code 4 (RC4) untuk mengetahui perbandingan performa dari kedua algoritma tersebut sehingga menghasilkan algoritma terbaik.</p>
+                <div class="row border-bottom">
+                    {{-- Advanced Encryption Standard (AES) --}}
                     <div class="col-md-6 border-right">
                         <div class="form-group">
                             <label for="kunci-enkripsi-teks" class="text-muted">Kunci</label>
-                            <input type="text" class="form-control" id="kunci-enkripsi-teks" autocomplete="off">
+                            <input type="text" class="form-control" id="kunci-enkripsi-teks-aes" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label for="plaintext-enkripsi-teks" class="text-muted">Plaintext</label>
-                            <textarea class="form-control" id="plaintext-enkripsi-teks" rows="5"></textarea>
+                            <textarea class="form-control" id="plaintext-enkripsi-teks-aes" rows="5"></textarea>
                         </div>
                         <div class="form-group">
-                            <button type="button" onclick="enkripsi_teks()" class="btn btn-danger">Enkripsi</button>
+                            <button type="button" onclick="enkripsi_teks_aes()" class="btn btn-danger">Enkripsi Advanced Encryption Standard (AES)</button>
                         </div>
-                        <div class="alert alert-fill-primary hidden-hasils pt-4" id="hasil-enkripsi" role="alert">
-                            <div class="form-group">
-                                <label class="border-bottom" for="hasil-chippertext-teks">Chippertext AES dan Base64</label>
-                                <div class="pt-3 mb-3" id="hasil-chippertext-teks"></div>
-                                <div class="btn pl-0 copy" data-clipboard-target="#hasil-chippertext-teks" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
-                                    <i class="link-icon mr-2" data-feather="copy"></i>
-                                    Copy
+                        <div class="alert hidden-hasils-aes pt-4 text-main bg-light-costum" id="hasil-enkripsi-aes" role="alert">
+                            <div class="form-group pb-0 mb-0">
+                                <label for="hasil-chippertext-teks">Chipperteks Advanced Encryption Standard (AES)</label>
+                                <div class="border-costum" style="width: 100%"></div>
+                                <div class="mt-3 mb-3" id="hasil-chippertext-teks-aes" style="max-height: 200px; overflow-y: scroll; font-weight: bolder"></div>
+                                <div class="border-costum pb-1" style="width: 100%"></div>
+                                <div class="btn pl-0 copy text-main mr-2" data-clipboard-target="#hasil-chippertext-teks-aes" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
+                                    <i class="link-icon mr-1" data-feather="copy"></i>
+                                    Salin
+                                </div>
+                                <div class="btn pl-0 copy text-main" data-clipboard-target="#hasil-chippertext-teks-aes" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
+                                    <i class="link-icon mr-1" data-feather="columns" style="font-size: 10px;"></i>
+                                    Tempel ke Chipperteks
                                 </div>
                             </div>
                         </div>
-
-                        <div class="alert alert-fill-success pt-4 hidden-hasils" id="hasil-enkripsi" role="alert">
-                            <div class="form-group">
-                                <label class="border-bottom" for="hasil-chippertext-teks">Chippertext AES</label>
-                                <div class="pt-3 mb-3" id="hasil-chippertext-only-aes"></div>
-                            </div>
-                        </div>
-
-                        <div class="alert alert-fill-info pt-4 hidden-hasils" id="hasil-enkripsi" role="alert">
-                            <div class="form-group">
-                                <label class="border-bottom" for="hasil-chippertext-teks">Chippertext Base64</label>
-                                <div class="pt-3 mb-3" id="hasil-chippertext-only-base"></div>
-                            </div>
-                        </div>
-
                     </div>
 
-                    <div class="col-md-6">
+                    {{-- Rivest Code 4 (RC4) --}}
+                    <div class="col-md-6 border-right">
                         <div class="form-group">
-                            <label for="kunci-dekripsi-teks" class="text-muted">Kunci</label>
-                            <input type="text" class="form-control" id="kunci-dekripsi-teks" autocomplete="off">
+                            <label for="kunci-enkripsi-teks" class="text-muted">Kunci</label>
+                            <input type="text" class="form-control" id="kunci-enkripsi-teks-rc4" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="plaintext-dekripsi-teks" class="text-muted">Chippertext</label>
-                            <textarea class="form-control" id="plaintext-dekripsi-teks" rows="5"></textarea>
+                            <label for="plaintext-enkripsi-teks" class="text-muted">Plaintext</label>
+                            <textarea class="form-control" id="plaintext-enkripsi-teks-rc4" rows="5"></textarea>
                         </div>
                         <div class="form-group">
-                            <button type="button" onclick="dekripsi_teks()" class="btn btn-danger">Dekripsi AES dan Base64</button>
-                            <button type="button" onclick="dekripsi_teks_aes()" class="btn btn-danger">Dekripsi AES</button>
-                            <button type="button" onclick="dekripsi_teks_base64()" class="btn btn-danger">Dekripsi Base64</button>
+                            <button type="button" onclick="enkripsi_teks_rc4()" class="btn btn-danger">Enkripsi Rivest Code 4 (RC4)</button>
                         </div>
-                        <div class="alert alert-fill-primary pt-4" id="hasil-dekripsi" role="alert">
-                            <div class="form-group">
-                                <label class="border-bottom">Plaintext</label>
-                                <div class="pt-3" id="hasil-plaintext-teks"></div>
-                                <div class="btn pl-0 copy" data-clipboard-target="#hasil-plaintext-teks" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
-                                    <i class="link-icon mr-2" data-feather="copy"></i>
-                                    Copy
+                        <div class="alert hidden-hasils-rc4 pt-4 text-main bg-dekripsi-costum" id="hasil-enkripsi-rc4" role="alert">
+                            <div class="form-group pb-0 mb-0">
+                                <label for="hasil-chippertext-teks">Chipperteks Rivest Code 4 (RC4)</label>
+                                <div class="border-costum" style="width: 100%"></div>
+                                <div class="mt-3 mb-3" id="hasil-chippertext-teks-rc4"  style="max-height: 200px; overflow-y: scroll; font-weight: bolder"></div>
+                                <div class="border-costum pb-1" style="width: 100%"></div>
+                                <div class="btn pl-0 copy text-main mr-2" data-clipboard-target="#hasil-chippertext-teks-rc4" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
+                                    <i class="link-icon mr-1" data-feather="copy"></i>
+                                    Salin
+                                </div>
+                                <div class="btn pl-0 copy text-main" data-clipboard-target="#hasil-chippertext-teks-rc4" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
+                                    <i class="link-icon mr-1" data-feather="columns" style="font-size: 10px;"></i>
+                                    Tempel ke Chipperteks
                                 </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
-                
+
+                <div class="row" style="margin-top: 100px">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="kunci-dekripsi-teks-aes" class="text-muted">Kunci</label>
+                            <input type="text" class="form-control" id="kunci-dekripsi-teks-aes" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="plaintext-dekripsi-teks" class="text-muted">Chippertext</label>
+                            <textarea class="form-control" id="plaintext-dekripsi-teks-aes" rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="dekripsi_teks_aes()" class="btn btn-danger">Dekripsi Advanced Encryption Standard (AES)</button>
+                        </div>
+                        <div class="alert hidden-hasils-dekripsi-aes pt-4 text-main bg-dekripsi-costum" id="hasil-dekripsi-aes" role="alert">
+                            <div class="form-group pb-0 mb-0">
+                                <label for="hasil-chippertext-teks">Plainteks Advanced Encryption Standard (AES)</label>
+                                <div class="border-costum" style="width: 100%"></div>
+                                <div class="mt-3 mb-3" id="hasil-plaintext-teks-aes" style="font-weight: bolder"></div>
+                                <div class="border-costum pb-1" style="width: 100%"></div>
+                                <div class="btn pl-0 copy text-main mr-2" data-clipboard-target="#hasil-chippertext-teks-aes" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
+                                    <i class="link-icon mr-1" data-feather="copy"></i>
+                                    Salin
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="kunci-dekripsi-teks" class="text-muted">Kunci</label>
+                            <input type="text" class="form-control" id="kunci-dekripsi-teks-rc4" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="plaintext-dekripsi-teks" class="text-muted">Chippertext</label>
+                            <textarea class="form-control" id="plaintext-dekripsi-teks-rc4" rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="dekripsi_teks_rc4()" class="btn btn-danger">Dekripsi Rivest Code 4 (RC4)</button>
+                        </div>
+                        <div class="alert hidden-hasils-dekripsi-rc4 pt-4 text-main bg-light-costum" id="hasil-dekripsi-rc4" role="alert">
+                            <div class="form-group pb-0 mb-0">
+                                <label for="hasil-chippertext-teks">Plainteks Rivest Code 4 (RC4)</label>
+                                <div class="border-costum" style="width: 100%"></div>
+                                <div class="mt-3 mb-3" id="hasil-plaintext-teks-rc4" style="font-weight: bolder"></div>
+                                <div class="border-costum pb-1" style="width: 100%"></div>
+                                <div class="btn pl-0 copy text-main mr-2" data-clipboard-target="#hasil-plaintext-teks-rc4" data-toggle="tooltip" title="" data-original-title="Copy to clipboard">
+                                    <i class="link-icon mr-1" data-feather="copy"></i>
+                                    Salin
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -3,6 +3,24 @@ function init() {
 }
 init();
 
+var e_aesbase64 = 0;
+var e_aes = 0;
+var e_base64 = 0;
+var e_des = 0;
+var e_rc4 = 0;
+var e_3des = 0;
+var e_rabbit = 0;
+var e_drop = 0;
+
+var d_aesbase64 = 0;
+var d_aes = 0;
+var d_base64 = 0;
+var d_des = 0;
+var d_rc4 = 0;
+var d_3des = 0;
+var d_rabbit = 0;
+var d_drop = 0;
+
 var dataImage = '';
 function readBackgroundURL(input) {
     dataImage = input;
@@ -25,12 +43,12 @@ function startTestKecepatan() {
     if (dataImage.files && dataImage.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
-            AESdanBase64(e.target.result, kunci);
-            DES(e.target.result, kunci);
-            tripleDES(e.target.result, kunci);
-            Rabbit(e.target.result, kunci);
+            AES(e.target.result, kunci);
             RC4(e.target.result, kunci);
-            RC4Drop(e.target.result, kunci);
+            setTimeout(() => {
+                initChartEnkripsi()
+                initChartDekripsi()
+            }, 100);
         };
         reader.readAsDataURL(dataImage.files[0]);
     }
@@ -38,121 +56,41 @@ function startTestKecepatan() {
     $('.result-card').fadeIn('slow');
 }
 
-
-// ---------------------------------------------------  AES & Base64 --------------------------------------------------------------
-async function AESdanBase64(plaintext, kunci){
+async function AES(plaintext, kunci){
     // Enkripsi
     var startEnkripsi = performance.now();
     const enkripsiAE = await enkripsiAES(plaintext , kunci);
     var endEnkripsi = performance.now();
-    $('#enkripsiAES').html(endEnkripsi - startEnkripsi + ' <span class="milisecond-speed">milisecond</span>')
+    e_aes = endEnkripsi - startEnkripsi
+    if (e_aes.toString().includes(".")) {
+        $('#enkripsi-AES').html(e_aes.toFixed(2) + ' <span class="milisecond-speed">milisecond</span>')
+    } else {
+        $('#enkripsi-AES').html(e_aes + ' <span class="milisecond-speed">milisecond</span>')
+    }
 
     // Dekripsi
     var startDekripsi = performance.now();
-    await enkripsiAES(plaintext , kunci);
+    await dekripsiAES(enkripsiAE , kunci);
     var endDekripsi = performance.now();
-    $('#dekripsiAES').html(endDekripsi - startDekripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    console.log(`bener lu?`, enkripsiAE)
-    $('#panjangAES').html(enkripsiAE.length + ' <span class="milisecond-speed">Kata</span>')
+    d_aes = endDekripsi - startDekripsi
+    if (d_aes.toString().includes(".")) {
+        $('#dekripsi-AES').html(d_aes.toFixed(2) + ' <span class="milisecond-speed">milisecond</span>')
+    } else {
+        $('#dekripsi-AES').html(d_aes + ' <span class="milisecond-speed">milisecond</span>')
+    }
+    // $('#panjangAES1').html(enkripsiAE.length + ' <span class="milisecond-speed">Kata</span>')
 };
 
 async function enkripsiAES(plaintext, kunci){
-    var resultEnkripsi = Base64.encode(CryptoJSAesJson.encrypt(plaintext, kunci));
+    var resultEnkripsi = enkripsiAdvancedEncryptionStandard(plaintext, kunci).toString().split('U2FsdGVkX1')[1];
     return resultEnkripsi;
 };
 
-async function dekripsiAES(plaintext, kunci){
-    var resultEnkripsi = Base64.encode(CryptoJSAesJson.encrypt(plaintext, kunci));
+async function dekripsiAES(chippertext, kunci){
+    var resultEnkripsi = dekripsiAdvancedEncryptionStandard("U2FsdGVkX1"+chippertext, kunci)
     return resultEnkripsi;
 };
-// ---------------------------------------------------  AES & Base64 --------------------------------------------------------------
-
-// ---------------------------------------------------  DES -----------------------------------------------------------------------
-async function DES(plaintext, kunci){
-    // Enkripsi
-    var startEnkripsi = performance.now();
-    const hasilEnkripsiDES = await enkripsiDES(plaintext, kunci)
-    var endEnkripsi = performance.now();
-    $('#enkripsiDES').html(endEnkripsi - startEnkripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    // Dekripsi
-    var startDekripsi = performance.now();
-    const hasilDekripsiDES = await dekripsiDES(hasilEnkripsiDES, kunci)
-    console.log(`hasilDekripsiDES`, hasilDekripsiDES)
-    var endDekripsi = performance.now();
-    $('#dekripsiDES').html(endDekripsi - startDekripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    $('#panjangDES').html(hasilEnkripsiDES.length + ' <span class="milisecond-speed">Kata</span>')
-};
-
-async function enkripsiDES(plainText, kunci) {
-    return resultEnkripsi = CryptoJS.enc.Base64.stringify(CryptoJS.DES.encrypt(window.btoa(plainText), CryptoJS.enc.Utf8.parse(kunci), { iv: CryptoJS.lib.WordArray.create([0, 0])}).ciphertext);
-}
-
-async function dekripsiDES(enkripsiDES, kunci) {
-    var resultDekripsi = CryptoJS.enc.Base64.parse(CryptoJS.DES.decrypt({ciphertext: CryptoJS.enc.Base64.parse(enkripsiDES)}, CryptoJS.enc.Utf8.parse(kunci), { iv: CryptoJS.lib.WordArray.create([0, 0]) }).toString(CryptoJS.enc.Utf8)).toString(CryptoJS.enc.Utf8);
-    return resultDekripsi;
-}
-// ---------------------------------------------------  DES -----------------------------------------------------------------------
-
-// ---------------------------------------------------  TRIPLE DES ----------------------------------------------------------------
-async function tripleDES(plaintext, kunci){
-    // Enkripsi
-    var startEnkripsi = performance.now();
-    const hasilEnkripsiTripleDES = await enkripsiTripleDES(plaintext, kunci)
-    var endEnkripsi = performance.now();
-    $('#enkripsiTripleDES').html(endEnkripsi - startEnkripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    // Dekripsi
-    var startDekripsi = performance.now();
-    const hasilDekripsiTripleDES = await dekripsiTripleDES(hasilEnkripsiTripleDES, kunci)
-    console.log(`hasilDekripsiDES`, hasilEnkripsiTripleDES)
-    var endDekripsi = performance.now();
-    $('#dekripsiTripleDES').html(endDekripsi - startDekripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    $('#panjangTripleDES').html(hasilEnkripsiTripleDES.toString().length + ' <span class="milisecond-speed">Kata</span>')
-};
-
-async function enkripsiTripleDES(plaintext, kunci){
-    var resultEnkripsi = CryptoJS.TripleDES.encrypt(plaintext, kunci)
-    return resultEnkripsi;
-};
-
-async function dekripsiTripleDES(plaintext, kunci){
-    var resultDekripsi = CryptoJS.TripleDES.decrypt(plaintext, kunci).toString(CryptoJS.enc.Utf8);
-    return resultDekripsi;
-};
-// ---------------------------------------------------  TRIPLE DES ----------------------------------------------------------------
-
-// ---------------------------------------------------  RABBIT --------------------------------------------------------------------
-async function Rabbit(plaintext, kunci){
-    // Enkripsi
-    var startEnkripsi = performance.now();
-    const hasilEnkripsiRabbit = await enkripsiRabbit(plaintext, kunci)
-    var endEnkripsi = performance.now();
-    $('#enkripsiRabbit').html(endEnkripsi - startEnkripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    // Dekripsi
-    var startDekripsi = performance.now();
-    const hasilDekripsiRabbit = await dekripsiRabbit(hasilEnkripsiRabbit, kunci)
-    console.log(`hasilEnkripsiRabbit`, hasilEnkripsiRabbit.toString())
-    var endDekripsi = performance.now();
-    $('#dekripsiRabbit').html(endDekripsi - startDekripsi + ' <span class="milisecond-speed">milisecond</span>')
-
-    $('#panjangRabbit').html(hasilEnkripsiRabbit.toString().length + ' <span class="milisecond-speed">Kata</span>')
-};
-
-async function enkripsiRabbit(plaintext, kunci){
-    var resultEnkripsi = CryptoJS.Rabbit.encrypt(plaintext, kunci);
-    return resultEnkripsi;
-};
-
-async function dekripsiRabbit(plaintext, kunci){
-    var resultDekripsi = CryptoJS.Rabbit.decrypt(plaintext, kunci);
-    return resultDekripsi;
-};
-// ---------------------------------------------------  RABBIT --------------------------------------------------------------------
+// ---------------------------------------------------  AES --------------------------------------------------------------
 
 // ---------------------------------------------------  RC4 -----------------------------------------------------------------------
 async function RC4(plaintext, kunci){
@@ -160,54 +98,143 @@ async function RC4(plaintext, kunci){
     var startEnkripsi = performance.now();
     const hasilEnkripsiRC4 = await enkripsiRC4(plaintext, kunci)
     var endEnkripsi = performance.now();
-    $('#enkripsiRC4').html(endEnkripsi - startEnkripsi + ' <span class="milisecond-speed">milisecond</span>')
 
+    e_rc4 = endEnkripsi - startEnkripsi
+    if (e_rc4.toString().includes(".")) {
+        $('#enkripsi-RC4').html(e_rc4.toFixed(2) + ' <span class="milisecond-speed">milisecond</span>')
+    } else {
+        $('#enkripsi-RC4').html(e_rc4 + ' <span class="milisecond-speed">milisecond</span>')
+    }
     // Dekripsi
     var startDekripsi = performance.now();
     const hasilDekripsiRC4 = await dekripsiRC4(hasilEnkripsiRC4, kunci)
-    console.log(`hasilEnkripsiRC4`, hasilEnkripsiRC4.toString())
     var endDekripsi = performance.now();
-    $('#dekripsiRC4').html(endDekripsi - startDekripsi + ' <span class="milisecond-speed">milisecond</span>')
 
-    $('#panjangRC4').html(hasilEnkripsiRC4.toString().length + ' <span class="milisecond-speed">Kata</span>')
+    d_rc4 = endDekripsi - startDekripsi
+    if (d_rc4.toString().includes(".")) {
+        $('#dekripsi-RC4').html(d_rc4.toFixed(2) + ' <span class="milisecond-speed">milisecond</span>')
+    } else {
+        $('#dekripsi-RC4').html(d_rc4 + ' <span class="milisecond-speed">milisecond</span>')
+    }
+    // $('#panjangRC4').html(hasilEnkripsiRC4.toString().length + ' <span class="milisecond-speed">Kata</span>')
 };
 
 async function enkripsiRC4(plaintext, kunci){
-    var resultEnkripsi = CryptoJS.RC4.encrypt(plaintext, kunci);
+    var resultEnkripsi = enkripsiRivestCode4(plaintext, kunci).toString().split('U2FsdGVkX1')[1]
     return resultEnkripsi;
 };
 
-async function dekripsiRC4(plaintext, kunci){
-    var resultDekripsi = CryptoJS.RC4.decrypt(plaintext, kunci);
+async function dekripsiRC4(chippertext, kunci){
+    var resultDekripsi = dekripsiRivestCode4("U2FsdGVkX1"+chippertext, kunci)
     return resultDekripsi;
 };
-// ---------------------------------------------------  RC4 -----------------------------------------------------------------------
 
-// ---------------------------------------------------  RC4 -----------------------------------------------------------------------
-async function RC4Drop(plaintext, kunci){
-    // Enkripsi
-    var startEnkripsi = performance.now();
-    const hasilEnkripsiRC4Drop = await enkripsiRC4Drop(plaintext, kunci)
-    var endEnkripsi = performance.now();
-    $('#enkripsiRC4Drop').html(endEnkripsi - startEnkripsi + ' <span class="milisecond-speed">milisecond</span>')
+var chartEnkripsi;
+var chartDekripsi;
+function initChartEnkripsi() {
+    var tercepat;
+    var colorAES = '#FF6384';
+    var colorRC4 = '#FF6384';
+    if (e_aes < e_rc4) {
+        colorAES = '#00F9FF';
+        colorRC4 = '#FF6384';
+        var hitung = e_rc4 - e_aes
+        tercepat = '<span style="color: #00F9FF">Advanced Encryption Standard (AES)</span> lebih cepat <span style="color: #00F9FF">' + hitung.toFixed(3) + ' ms</span> dari <span style="color: #FF6384">Rivest Code 4 (RC4)</span>';
+    } else if (e_aes > e_rc4) {
+        colorAES = '#FF6384';
+        colorRC4 = '#00F9FF';
+        var hitung = e_aes - e_rc4
+        tercepat = '<span style="color: #00F9FF">Rivest Code 4 (RC4)</span> lebih cepat <span style="color: #00F9FF">' + hitung.toFixed(3) + ' ms</span> dari <span style="color: #FF6384">Advanced Encryption Standard (AES)</span>';
+    } else {
+        colorAES = '#FF6384';
+        colorRC4 = '#FF6384';
+    }
 
-    // Dekripsi
-    var startDekripsi = performance.now();
-    const hasilDekripsiRC4Drop = await dekripsiRC4Drop(hasilEnkripsiRC4Drop, kunci)
-    console.log(`hasilEnkripsiRC4Drop`, hasilEnkripsiRC4Drop.toString())
-    var endDekripsi = performance.now();
-    $('#dekripsiRC4Drop').html(endDekripsi - startDekripsi + ' <span class="milisecond-speed">milisecond</span>')
+    $('#enkrpsi-paling-cepat').html(tercepat)
 
-    $('#panjangRC4Drop').html(hasilEnkripsiRC4Drop.toString().length + ' <span class="milisecond-speed">Kata</span>')
-};
+    var ctx = $('#chartEnkripsi');
+    const labels = [
+        'AES',
+        'RC4',
+      ];
+      const data = {
+            labels: labels,
+            datasets: [{
+            barPercentage: 0.5,
+            categoryPercentage: 0.5,
+            barThickness: 15,
+            minBarLength: 1,
+            label: 'Kecepatan Enkripsi',
+            backgroundColor: [colorAES, colorRC4],
+            borderColor: [colorAES, colorRC4],
+            data: [e_aes, e_rc4],
+        }]
+    };
 
-async function enkripsiRC4Drop(plaintext, kunci){
-    var resultEnkripsi = CryptoJS.RC4Drop.encrypt(plaintext, kunci);
-    return resultEnkripsi;
-};
 
-async function dekripsiRC4Drop(plaintext, kunci){
-    var resultDekripsi = CryptoJS.RC4Drop.decrypt(plaintext, kunci);
-    return resultDekripsi;
-};
-// ---------------------------------------------------  RC4 -----------------------------------------------------------------------
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            indexAxis: 'x',
+        },
+    };
+
+    if (chartEnkripsi) {
+        chartEnkripsi.destroy();
+    }
+    chartEnkripsi = new Chart(ctx, config);
+  }
+
+  function initChartDekripsi() {
+    var ctx = $('#chartDekripsi');
+
+    if (d_aes < d_rc4) {
+        colorAES = '#00F9FF';
+        colorRC4 = '#FF6384';
+        var hitung = d_rc4 - d_aes
+        tercepat = '<span style="color: #00F9FF">Advanced Encryption Standard (AES)</span> lebih cepat <span style="color: #00F9FF">' + hitung.toFixed(3) + ' ms</span> dari <span style="color: #FF6384">Rivest Code 4 (RC4)</span>';
+    } else if (d_aes > d_rc4) {
+        colorAES = '#FF6384';
+        colorRC4 = '#00F9FF';
+        var hitung = d_aes - d_rc4
+        tercepat = '<span style="color: #00F9FF">Rivest Code 4 (RC4)</span> lebih cepat <span style="color: #00F9FF">' + hitung.toFixed(3) + ' ms</span> dari <span style="color: #FF6384">Advanced Encryption Standard (AES)</span>';
+    } else {
+        colorAES = '#FF6384';
+        colorRC4 = '#FF6384';
+    }
+
+    $('#dekripsi-paling-cepat').html(tercepat)
+
+    const labels = [
+        'AES',
+        'RC4',
+      ];
+      const data = {
+            labels: labels,
+            datasets: [{
+            barPercentage: 0.5,
+            categoryPercentage: 0.5,
+            barThickness: 15,
+            minBarLength: 1,
+            label: 'Kecepatan Dekripsi',
+            backgroundColor: [colorAES, colorRC4],
+            borderColor: [colorAES, colorRC4],
+            data: [d_aes, d_rc4],
+        }]
+      };
+
+
+      const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            indexAxis: 'x',
+        },
+      };
+
+      if (chartDekripsi) {
+        chartDekripsi.destroy();
+        }
+        chartDekripsi = new Chart(ctx, config);
+  }

@@ -38,6 +38,9 @@ Route::prefix('kecepatan')->group(function () {
 });
 
 Route::prefix('keamanan')->group(function () {
+    Route::get('/panjang-chipperteks', [FrontendPath\KeamananControllers::class, 'panjang_chipperteks']);
+    Route::get('/infinity-loop', [FrontendPath\KeamananControllers::class, 'infinity_loop']);
+    Route::get('/panjang-kunci', [FrontendPath\KeamananControllers::class, 'panjang_kunci']);
     Route::get('/web-generator', [FrontendPath\KeamananControllers::class, 'web_generator']);
     Route::get('/brute-force', [FrontendPath\KeamananControllers::class, 'brute_force']);
 });

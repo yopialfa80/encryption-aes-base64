@@ -6,65 +6,96 @@ function init() {
 init();
 
 var clipboard = new ClipboardJS('.copy');
-
 clipboard.on('success', function(e) {
-    console.info('Action:', e.action);
-    console.info('Text:', e.text);
-    console.info('Trigger:', e.trigger);
-
     e.clearSelection();
 });
 
-clipboard.on('error', function(e) {
-    console.error('Action:', e.action);
-    console.error('Trigger:', e.trigger);
-});
-
-var dataVideo = '';
-
-$(document).on("change", ".file_multi_video", function(evt) {
-    dataVideo = this;
+var dataVideoAes = '';
+$(document).on("change", "#formFile-aes", function(evt) {
+    dataVideoAes = this;
     $('.hidden-video').show();
-    var $source = $('#video-show');
+    var $source = $('#video-show-aes');
     $source[0].src = URL.createObjectURL(this.files[0]);
     $source.parent()[0].load();
 });
 
-function enkripsiVideo() {
-    if (dataVideo.files && dataVideo.files[0]) {
+function enkripsiVideoAes() {
+    if (dataVideoAes.files && dataVideoAes.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
-            var kunci_enkripsi = $('#kunci-enkripsi-teks').val();
-            $('#hasil-chippertext-teks').html(encrypt(e.target.result, kunci_enkripsi));
-            $('#hasil-enkripsi').fadeIn(1000);
+            var kunci_enkripsi = $('#kunci-enkripsi-teks-aes').val();
+            $('#hasil-chippertext-teks-aes').html(enkripsiAdvancedEncryptionStandard(e.target.result, kunci_enkripsi).toString());
+            $('#hasil-enkripsi-aes').fadeIn(1000);
         };
-        reader.readAsDataURL(dataVideo.files[0]);
+        reader.readAsDataURL(dataVideoAes.files[0]);
     }
 }
 
-function dekripsiImage(input) {
-    var kunci_dekripsi = $('#kunci-dekripsi-teks').val();
-    var chippertext_dekripsi = $('#plaintext-dekripsi-teks').val();
-    $('#hasil-dekripsi').fadeIn(1000);
-    var hasilDecrypt;
-    try {
-        $('#video-show-dekripsi').show();
-        $('#hasil-plaintext-teks').hide();
-        hasilDecrypt = decrypt(chippertext_dekripsi, kunci_dekripsi);
-        $('#video-show-dekripsi').attr('src', hasilDecrypt);
-        $('#hasil-dekripsi').addClass('alert-fill-primary');
-        $('#hasil-dekripsi').removeClass('alert-fill-danger');
-        console.log(`hasilDecrypt`, hasilDecrypt)
-        
-    }
-    catch(err) {
-        $('#video-show-dekripsi').hide();
-        $('#hasil-plaintext-teks').show();
-        $('#hasil-dekripsi').removeClass('alert-fill-primary');
-        $('#hasil-dekripsi').addClass('alert-fill-danger');
-        document.getElementById("hasil-plaintext-teks").innerHTML = err.message;
-        
-    }
+var dataVideoRc4 = '';
+$(document).on("change", "#formFile-rc4", function(evt) {
+    dataVideoRc4 = this;
+    $('.hidden-video').show();
+    var $source = $('#video-show-rc4');
+    $source[0].src = URL.createObjectURL(this.files[0]);
+    $source.parent()[0].load();
+});
 
-    
+function enkripsiVideoRc4() {
+    if (dataVideoRc4.files && dataVideoRc4.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var kunci_enkripsi = $('#kunci-enkripsi-teks-rc4').val();
+            $('#hasil-chippertext-teks-rc4').html(enkripsiAdvancedEncryptionStandard(e.target.result, kunci_enkripsi).toString());
+            $('#hasil-enkripsi-rc4').fadeIn(1000);
+        };
+        reader.readAsDataURL(dataVideoRc4.files[0]);
+    }
 }
+
+function dekripsiVideoAes() {
+    var kunci_dekripsi = $('#kunci-dekripsi-teks-aes').val();
+    var chippertext_dekripsi = $('#plaintext-dekripsi-teks-aes').val();
+    $('#hasil-dekripsi-aes').fadeIn(1000);
+
+    var hasilDecrypt = dekripsiAdvancedEncryptionStandard(chippertext_dekripsi, kunci_dekripsi)
+    if (hasilDecrypt == '') {
+        $('#hasil-dekripsi-aes').css('background', '#FF3366')
+        $('#video-show-dekripsi-aes').hide();
+        $('#hasil-plaintext-teks-aes').show();
+        document.getElementById("hasil-plaintext-teks-aes").innerHTML = 'Error: Malformed UTF-8 data';
+    } else {
+        $('#hasil-dekripsi-aes').css('background', '#EFEFEF')
+        $('#video-show-dekripsi-aes').show();
+        $('#hasil-plaintext-teks-aes').hide();
+
+        var html = '';
+        html += '<source type="video/mp4"  id="video-show-dekripsi-aes" src="'+hasilDecrypt+'" style="width: 25px; height: 25px;">'
+        $('#container-aes').html(html);
+    }
+}
+
+function dekripsiVideoRc4() {
+    var kunci_dekripsi = $('#kunci-dekripsi-teks-rc4').val();
+    var chippertext_dekripsi = $('#plaintext-dekripsi-teks-rc4').val();
+    $('#hasil-dekripsi-rc4').fadeIn(1000);
+    var hasilDecrypt = dekripsiAdvancedEncryptionStandard(chippertext_dekripsi, kunci_dekripsi)
+    if (hasilDecrypt == '') {
+        $('#hasil-dekripsi-rc4').css('background', '#FF3366')
+        $('#video-show-dekripsi-rc4').hide();
+        $('#hasil-plaintext-teks-rc4').show();
+        document.getElementById("hasil-plaintext-teks-rc4").innerHTML = 'Error: Malformed UTF-8 data';
+    } else {
+        $('#hasil-dekripsi-rc4').css('background', '#EFEFEF')
+        $('#video-show-dekripsi-rc4').show();
+        $('#hasil-plaintext-teks-rc4').hide();
+        
+        var html = '';
+        html += '<source type="video/mp4"  id="video-show-dekripsi-rc4" src="'+hasilDecrypt+'" style="width: 25px; height: 25px;">'
+        $('#container-rc4').html(html);
+    }
+}
+
+function getEncodedVideoString($type, $file) {
+    console.log(`$file`, $file)
+    // return "data:video/" + $type + ";base64," + atob($file);
+ }
